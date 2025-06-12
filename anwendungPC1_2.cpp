@@ -14,8 +14,7 @@ public:		//diese Funktionen und Variablen sind von außen sichtbar und können auc
 	//"DWORD" ist double Word;
 	//"baudrate" ist übertragungsgeschwindigkeit für COM-port - hier CBR_9600;
 	SerielleVerbindung(const std::wstring& portName, DWORD baudrate = CBR_9600)
-		: portName_(portName), baudrate_(baudrate), VerbindungsVerwaltung(INVALID_HANDLE_VALUE) {
-	}	//Initialisierungsleiste - diese weist direkt die werte zu
+		: portName_(portName), baudrate_(baudrate), VerbindungsVerwaltung(INVALID_HANDLE_VALUE) {}	//Initialisierungsleiste - diese weist direkt die werte zu
 
 //dekonstruktor "serielleVerbindung": schließt den COM-port sicher
 	~SerielleVerbindung() {
@@ -57,7 +56,7 @@ public:		//diese Funktionen und Variablen sind von außen sichtbar und können auc
 		}
 
 		//serielle schnittstellenparameter
-		portEinstellungen.BaudRate = baudrate_;		//üertragungsrate
+		portEinstellungen.BaudRate = baudrate_;		//übertragungsrate
 		portEinstellungen.ByteSize = 8;				//wie viele bits hat ein zeichen
 		portEinstellungen.StopBits = ONESTOPBIT;	//wie viele stop-bits am ende eines zeichens
 		portEinstellungen.Parity = NOPARITY;		//ist fehlerprüfung aktiviert (nein)
@@ -84,7 +83,7 @@ public:		//diese Funktionen und Variablen sind von außen sichtbar und können auc
 	//funktion zum senden einer zeile (rechenausdruck)
 	//funktion heißt "zeileSenden"
 	bool	zeileSenden(const std::string& text) {			//string: zeichenkette; der "text" wird mittels referenz schreibgeschützt übergeben
-		std::string textMitZeilenumbruch = text + "\n";		//ergänzt den text um einen zeilenumbruch, da arduino am Ende "\n² erwartet (Eingabe ist abgeschlossen);
+		std::string textMitZeilenumbruch = text + "\n";		//ergänzt den text um einen zeilenumbruch, da arduino am Ende "\n" erwartet (Eingabe ist abgeschlossen);
 		DWORD anzahlGesendeteZeichen;						//speichert wie viele bytes tatsächlich gesendet wurden;
 
 		//"WriteFile" ist windows-API-funktion, die die Daten an den COM-port sendet;
@@ -109,7 +108,7 @@ public:		//diese Funktionen und Variablen sind von außen sichtbar und können auc
 			//"ReadFile(VerbindungsVerwaltung" liest ein einzelnes zeichen vom COM-port 
 			//"&einzelnesZeichen": Zielpuffer, wohin mit den Daten
 			//"1": wie viele bytes sollen gelesen werden
-			//"&zeichenGelesen": Zielpuffer, wie viele daten wurden gelesen
+			//"&zeichenGelesen": Zielpuffer, wie viele daten wurden gelesen ("&" ist zeiger auf die variable)
 			//"NULL": kein overlapped-modus;
 			//"&& zeichenGelesen == 1": nur wenn genau 1 byte empfangen wurde, soll der code im if-block ausgeführt werden;
 			if (ReadFile(VerbindungsVerwaltung, &einzelnesZeichen, 1, &zeichenGelesen, NULL) && zeichenGelesen == 1) {
@@ -177,8 +176,8 @@ private:		//dies ist nur innerhalb der klasse selbst zugänglich;
 //funktion "istLongImBereich" nimmt eine zeichnkette entgegen und prüft ob diese als "long" gültig wäre
 //durch den vergleich als string (text) wird überprüft ob der text überhaupt in das format "long" passt bevor man die zeichenkette in eine zahl umwandelt
 bool istLongImBereich(const std::string& text) {		//string: zeichenkette; der "text" wird mittels referenz schreibgeschützt übergeben
-	const std::string LONG_MAX_STR = "2147483640";		//grösster positiver wert für "long"
-	const std::string LONG_MIN_STR = "-2147483640";		//kleinster negativer wert für "long"
+	const std::string LONG_MAX_STR = "2147483647";		//grösster positiver wert für "long"
+	const std::string LONG_MIN_STR = "-2147483647";		//kleinster negativer wert für "long"
 
 	std::string kontrolleText = text;		//erstellt eine kopie des strings "text" mit dem namen "kontrolleText" (dadurch wird das original nicht verändert)
 
@@ -257,7 +256,7 @@ int main() {
 		const std::string erlaubteOperatoren = "+-*/";		//erlaubte rechenoperatoren festlegen
 
 		//"size_t": datentyp für größen und indizes
-		//"eingabe.find_first_of(erlaubteOperatoren, 1)": "find_first_of" sucht im string "eingabe" nach dem ersten zeichen von "erlaubteOperatoren"; "1": ab dem index 1 wird gezählt (falls erste "zahl" negativ ist)
+		//"eingabe.find_first_of(erlaubteOperatoren, 1)": "find_first_of" sucht im string "eingabe" nach dem ersten zeichen von "erlaubteOperatoren"; "1": ab dem index 1 wird gezählt (falls "erste zahl" negativ ist)
 		//die posiion des operators wird in "opPos" gespeichert
 		size_t	opPos = eingabe.find_first_of(erlaubteOperatoren, 1);
 		if (opPos == std::string::npos) {											//wenn ein ausdruck ohne operator eingegeben wird...

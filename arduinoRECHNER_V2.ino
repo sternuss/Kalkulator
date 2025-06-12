@@ -35,8 +35,8 @@ void rechneAusdruck(String eingabeText) {//funktion zur verarbeitung und berechn
     Serial.println();
 
     //überlauf-grenzen
-    const long MIN = -2147483640L;    //grenze negativer zahlenbereich
-    const long MAX = 2147483640L;     //grenze positiver zahlenbereich
+    const long MIN = -2147483647L;    //grenze negativer zahlenbereich
+    const long MAX = 2147483647L;     //grenze positiver zahlenbereich
 
 
     switch(operatorSymbol) {  //rechne je nach erkanntem rechenzeichen - mit überlaufprüfung
@@ -83,6 +83,7 @@ void rechneAusdruck(String eingabeText) {//funktion zur verarbeitung und berechn
           break;    //beendet die multiplikation
 
         case '/':       // wenn das rechenzeichen / erkannt wird
+                        //hier keine prüfung auf überlauf notwendig
           if(zahl2 != 0) { //wenn die zweite zahl keine null ist, dann
             float ergebnisFloat = (float)zahl1 / (float)zahl2;   //ergebnis der division wird in eine fließkommazahl umgewandelt
             Serial.print("Ergebnis (auf drei Stellen gerundet): ");
@@ -97,7 +98,7 @@ void rechneAusdruck(String eingabeText) {//funktion zur verarbeitung und berechn
               gueltigeEingabe = false; //kontrollvariable ist falsch
               }
           break;    // beendet die division
-        default:    //wenn kein gültiges rechenzeichen eingegeben (erkannt) wurde, wird folgende meldung ausgegeben
+        default:    //wenn kein gültiges rechenzeichen eingegeben (erkannt) wurde, wird folgende meldung ausgegeben (zusätzliche überprüfung zu PC-anwendung)
           Serial.println("Fehler: Unbekannter Rechenoperator! Erlaubt sind nur ganze Zahlen und die Operationen +, -, * und /");
           Serial.println("-EOF-");    // endmarker des gesendeten textes (end of file)
           gueltigeEingabe = false;    //kontrollvariable ist falsch
@@ -109,7 +110,7 @@ void rechneAusdruck(String eingabeText) {//funktion zur verarbeitung und berechn
         Serial.println("-EOF-");  // endmarker des gesendeten textes (end of file)
         } 
       }
-   else {    //wenn der ausdruck nicht im richtigen format ist
+   else {    //wenn der ausdruck nicht im richtigen format ist (zusätzliche überprüfung zu PC-anwendung)
         Serial.println("Fehler: Ungueltige Eingabe. Bitte Format 'Zahl Operator Zahl' verwenden (z. B. 18*3)");
         Serial.println("Erlaubte Operatoren: +, -, * und /");
         Serial.println("Es wurde eingegeben: ");
